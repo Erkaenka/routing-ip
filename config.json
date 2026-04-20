@@ -5,7 +5,8 @@
       "action": "add",
       "args": {
         "uri": "https://antifilter.download/list/allyouneed.lst",
-        "list": "ru"
+        "format": "text",
+        "name": "ru"
       }
     }
   ],
@@ -13,7 +14,8 @@
     {
       "type": "v2rayGeoIPDat",
       "args": {
-        "outputDir": "output/dat"
+        "outputDir": "output/dat",
+        "list": "ru"
       }
     }
   ]
