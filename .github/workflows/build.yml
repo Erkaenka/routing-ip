@@ -2,8 +2,8 @@ name: Build GeoIP
 
 on:
   schedule:
-    - cron: '0 0 * * 0'  # Каждое воскресенье в 00:00 UTC
-  workflow_dispatch:      # Ручной запуск
+    - cron: '0 0 * * 0'  # каждое воскресенье в 00:00 UTC
+  workflow_dispatch:
 
 jobs:
   build:
@@ -17,16 +17,19 @@ jobs:
         with:
           go-version: '1.23'
 
-      - name: Install geoip tool
+      - name: Clone geoip tool
+        run: git clone https://github.com/v2fly/geoip.git
+
+      - name: Download dependencies
         run: |
-          git clone https://github.com/v2fly/geoip.git
           cd geoip
-          go build -o geoip ./main
+          go mod download
 
       - name: Generate geoip.dat
         run: |
           cd geoip
-          ./geoip --country=../config.json --output=../geoip.dat
+          go run ./ -c ../config.json
+          mv output/dat/geoip.dat ../geoip.dat
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
