@@ -2,7 +2,7 @@ name: Build GeoIP
 
 on:
   schedule:
-    - cron: '0 0 * * 0'  # каждое воскресенье в 00:00 UTC
+    - cron: '0 0 * * 0'  # Каждое воскресенье в полночь
   workflow_dispatch:
 
 jobs:
@@ -12,24 +12,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: '1.23'
-
-      - name: Clone geoip tool
-        run: git clone https://github.com/v2fly/geoip.git
-
-      - name: Download dependencies
+      - name: Download latest full geoip.dat
         run: |
-          cd geoip
-          go mod download
-
-      - name: Generate geoip.dat
-        run: |
-          cd geoip
-          go run ./ -c ../config.json
-          mv output/dat/geoip.dat ../geoip.dat
+          curl -L -o geoip.dat https://github.com/runetfreedom/russia-blocked-geoip/releases/latest/download/geoip.dat
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -42,7 +27,7 @@ jobs:
         with:
           tag_name: latest
           name: Latest GeoIP
-          body: Автоматически сгенерированный файл geoip.dat
+          body: Полный geoip.dat из runetfreedom/russia-blocked-geoip
           files: geoip.dat
           prerelease: false
         env:
