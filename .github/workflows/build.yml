@@ -1,0 +1,46 @@
+name: Build GeoIP
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'  # Каждое воскресенье в 00:00 UTC
+  workflow_dispatch:      # Ручной запуск
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+
+      - name: Install geoip tool
+        run: |
+          git clone https://github.com/v2fly/geoip.git
+          cd geoip
+          go build -o geoip ./main
+
+      - name: Generate geoip.dat
+        run: |
+          cd geoip
+          ./geoip --country=../config.json --output=../geoip.dat
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: geoip.dat
+          path: geoip.dat
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: Latest GeoIP
+          body: Автоматически сгенерированный файл geoip.dat
+          files: geoip.dat
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
