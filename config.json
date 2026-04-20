@@ -1,11 +1,28 @@
 {
-  "countries": [
+  "input": [
     {
-      "code": "RU",
-      "cidr": [
-        "https://antifilter.download/list/allyouneed.lst",
-        "https://raw.githubusercontent.com/mtopping/ru-blocklist/main/ru-ipv4.txt"
-      ]
+      "type": "text",
+      "action": "add",
+      "args": {
+        "uri": "https://antifilter.download/list/allyouneed.lst",
+        "list": "ru"
+      }
+    },
+    {
+      "type": "text",
+      "action": "add",
+      "args": {
+        "uri": "https://raw.githubusercontent.com/mtopping/ru-blocklist/main/ru-ipv4.txt",
+        "list": "ru"
+      }
+    }
+  ],
+  "output": [
+    {
+      "type": "v2rayGeoIPDat",
+      "args": {
+        "outputDir": "output/dat"
+      }
     }
   ]
 }
